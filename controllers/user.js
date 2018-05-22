@@ -1,5 +1,7 @@
 var UserModel = require('../models/user');
 var cm = require('../models/user');
+var moment = require('moment');
+var nodemailer = require('nodemailer');
 
 exports.create = function (req, res) {
     // Create and Save a new Note
@@ -93,3 +95,47 @@ exports.home = (req, res) => {
     }
     );
 };
+
+exports.createByAdmin = (req, res) => {
+    var password = Math.random().toString(36).slice(-8);
+    var value = req.body;
+    value.password = password;
+    value.role = 1;
+    value.createat = moment().format("YYYY-MM-DD");
+
+    UserModel.findOneByEmail(value.email, function (err, data) {
+        if (data.length > 0) {
+            res.send({"error": "Email have already exist!"});
+            return;
+        }
+    });
+
+    UserModel.create(value, function (err, data) {
+        if (err) {
+            res.status(400).send({"error": err});
+            return;
+        }
+        //
+        nodemailer.createTestAccount((err, account) => {
+            let transporter = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                    user: 'minhbaovn1210alias@gmail.com', // generated ethereal user
+                    pass: 'Bao12345' // generated ethereal password
+                }
+            });
+            let mailOptions = {
+                from: '"Admin Sportshop"',
+                to: value.email,
+                subject: 'Manager Invitation',
+                text: '',
+                html: `<div>Email: ${value.email}</div><b>Your password: ${value.password}</b>`
+            };
+            transporter.sendMail(mailOptions);
+        });
+        //
+        res.send({"error": null});
+    });
+}

@@ -34,3 +34,10 @@ exports.findOne = function (value, callback) {
 	});
 }
 
+exports.findOneByEmail = function (email, callback) {
+	var query = `Select * From taikhoan Where email = '${email}'`;;
+	db.executeParamsQuery(query, function(err, data){
+		callback(err, data);
+	});
+}
+

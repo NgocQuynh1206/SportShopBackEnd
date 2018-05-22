@@ -9,6 +9,7 @@ var loaisanpham = require('./routes/loaisanpham');
 var user = require('./routes/user');
 var donhang = require('./routes/donhang');
 var ctdonhang = require('./routes/ctdonhang');
+var login = require('./routes/login');
 
 var app = express();
 
@@ -18,11 +19,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
+
 app.use('/api', sanpham);
 app.use('/api', loaisanpham);
 app.use('/api', user);
 app.use('/api', donhang);
 app.use('/api', ctdonhang);
+app.use('/api', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
