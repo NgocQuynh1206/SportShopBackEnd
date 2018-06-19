@@ -29,7 +29,7 @@ exports.findAll = function (req, res) {
 
 exports.findOne = function (req, res) {
     // Find a single note with a noteId
-    var value = req.params.madonhang;
+    var value = req.params.email;
 
     DonHangModel.findOne(value, function (err, data) {
         if (err) {
@@ -83,13 +83,32 @@ exports.delete = function (req, res) {
     });
 };
 
-exports.home = (req, res) => {
-    DonHangModel.findAll(function (err, data) {
+exports.thongKeNgay = (req, res) => {
+    DonHangModel.thongKeNgay(function (err, data) {
         if (err) {
             res.status(400).send(err);
             return;
         }
-        res.render('index', {title: 'Sản Phẩm', data});
-    }
-    );
-};
+        res.send(data);
+    });
+}
+
+exports.thongKeThang = (req, res) => {
+    DonHangModel.thongKeThang(function (err, data) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.send(data);
+    });
+}
+
+exports.thongKeNam = (req, res) => {
+    DonHangModel.thongKeNam(function (err, data) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.send(data);
+    });
+}

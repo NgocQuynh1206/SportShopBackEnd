@@ -10,6 +10,9 @@ var user = require('./routes/user');
 var donhang = require('./routes/donhang');
 var ctdonhang = require('./routes/ctdonhang');
 var login = require('./routes/login');
+var comment = require('./routes/comment');
+var search = require('./routes/search');
+var giohang = require('./routes/giohang');
 
 var app = express();
 
@@ -30,7 +33,9 @@ app.use('/api', user);
 app.use('/api', donhang);
 app.use('/api', ctdonhang);
 app.use('/api', login);
-
+app.use('/api', comment);
+app.use('/api', search);
+app.use('/api', giohang);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');

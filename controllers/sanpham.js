@@ -1,21 +1,6 @@
 var SanPhamModel = require('../models/sanpham');
 var cm = require('../models/sanpham');
-var jwt = require('jsonwebtoken');
-var passport = require("passport");
-var passportJWT = require("passport-jwt");
 
-var ExtractJwt = passportJWT.ExtractJwt;
-var JwtStrategy = passportJWT.Strategy;
-
-var jwtOptions = {}
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-jwtOptions.secretOrKey = 'BaoQuyetQuynh';
-
-var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
-    console.log('payload received', jwt_payload);
-    next(null, jwt_payload)
-});
-passport.use(strategy);
 exports.create = function (req, res) {
     // Create and Save a new Note
     var value = req.body;
@@ -71,6 +56,7 @@ exports.update = function (req, res) {
 
         var value = req.body;
         value.masanpham = id;
+        console.log(value)
 
         SanPhamModel.update(value, function(err, data){
             if(err) {
@@ -98,13 +84,69 @@ exports.delete = function (req, res) {
     });
 };
 
-exports.home = (req, res) => {
-    SanPhamModel.findAll(function (err, data) {
-        if (err) {
+exports.top12 = (req, res) => {
+    SanPhamModel.top12( (err, data) => {
+        if(err) {
             res.status(400).send(err);
             return;
         }
-        res.render('index', {title: 'Sản Phẩm', data});
-    }
-    );
+        res.send(data);
+    })
+}
+
+exports.top12ByID = (req, res) => {
+    var id = req.params.masanpham;
+    SanPhamModel.top12ByID(id, (err, data) => {
+        if(err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.send(data);
+    })
+}
+
+exports.top12view = (req, res) => {
+    SanPhamModel.top12view( (err, data) => {
+        if(err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.send(data);
+    })
+}
+
+exports.findByCat = (req, res) => {
+    let page = req.query.page ? req.query.page : 1;
+    SanPhamModel.findByCat(req.params.maloai, page , (err, data) => {
+        if(err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.send(data);
+    })
+}
+
+exports.upView = (req, res) => {
+    SanPhamModel.upView(req.params.masanpham, (err, data) => {
+        if(err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.send(data);
+    })
+}
+
+exports.updateSoLuong = function (req, res) {
+    // Update a note identified by the noteId in the request
+    var masanpham = req.params.masanpham;
+    var value = req.body;
+    var soluong = value.soluong;
+    SanPhamModel.updateSoLuong(soluong, masanpham, function(err, data){
+        if(err) {
+            res.status(500).send(err);
+            return;
+        } else {
+            res.send(data);
+        }
+    });
 };

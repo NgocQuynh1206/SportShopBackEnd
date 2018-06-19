@@ -82,14 +82,3 @@ exports.delete = function (req, res) {
         res.send(data);
     });
 };
-
-exports.home = (req, res) => {
-    CTDonHangModel.findAll(function (err, data) {
-        if (err) {
-            res.status(400).send(err);
-            return;
-        }
-        res.render('index', {title: 'Sản Phẩm', data});
-    }
-    );
-};

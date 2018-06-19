@@ -28,7 +28,7 @@ exports.update = function (value, callback) {
 }
 
 exports.findOne = function (value, callback) {
-	var query = "Select* From ctdonhang Where mactdonhang = ?";
+	var query = "Select* From ctdonhang Where madonhang = ?";
 	db.executeParamsQuery(query, value, function(err, data){
 		callback(err, data);
 	});

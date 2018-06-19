@@ -1,4 +1,4 @@
-var jwt = require('jsonwebtoken');
+
 var passport = require("passport");
 var passportJWT = require("passport-jwt");
 
@@ -10,7 +10,6 @@ jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = 'BaoQuyetQuynh';
 
 var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
-    console.log('payload received', jwt_payload);
     next(null, jwt_payload)
 });
 passport.use(strategy);

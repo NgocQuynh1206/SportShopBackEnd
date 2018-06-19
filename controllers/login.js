@@ -13,7 +13,6 @@ jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = 'BaoQuyetQuynh';
 
 var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
-    console.log('payload received', jwt_payload);
     next(null, jwt_payload)
 });
 passport.use(strategy);
@@ -33,7 +32,7 @@ exports.log = function (req, res) {
         
         var payload = {id: data[0].id, email: data[0].email, role: data[0].role};
         var token = jwt.sign(payload, jwtOptions.secretOrKey);
-        res.json({token: token, email: data[0].email, firstname: data[0].firstname, id: data[0].id});
+        res.json({token: token, email: data[0].email, firstname: data[0].firstname, id: data[0].id, role: data[0].role, lastname: data[0].lastname, address: data[0].address, phone: data[0].phone});
     });
     
 };

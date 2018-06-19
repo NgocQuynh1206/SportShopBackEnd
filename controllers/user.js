@@ -85,17 +85,6 @@ exports.delete = function (req, res) {
     });
 };
 
-exports.home = (req, res) => {
-    UserModel.findAll(function (err, data) {
-        if (err) {
-            res.status(400).send(err);
-            return;
-        }
-        res.render('index', {title: 'Tài Khoản', data});
-    }
-    );
-};
-
 exports.createByAdmin = (req, res) => {
     var password = Math.random().toString(36).slice(-8);
     var value = req.body;
@@ -137,5 +126,57 @@ exports.createByAdmin = (req, res) => {
         });
         //
         res.send({"error": null});
+    });
+}
+
+exports.checkEmail = (req, res) => {
+    UserModel.findOneByEmail(req.body.email, function (err, data) {
+        if (data.length > 0) {
+            res.send({"error": "Email đã tồn tại!"});
+            return;
+        }
+        else {
+            res.send({"error": null});
+        }
+    });
+}
+
+exports.forgot = (req, res) => {
+    var password = Math.random().toString(36).slice(-8);
+
+    UserModel.findOneByEmail(req.body.email, function (err, data) {
+        if (data.length > 0) {
+            data[0].password = password;
+            UserModel.update(data[0], function(errUpdate, dataUpdate){
+                if(errUpdate) {
+                    res.status(500).send(errUpdate);
+                    return;
+                } else {
+                    nodemailer.createTestAccount((errMail, account) => {
+                        let transporter = nodemailer.createTransport({
+                            host: 'smtp.gmail.com',
+                            port: 587,
+                            secure: false, // true for 465, false for other ports
+                            auth: {
+                                user: 'minhbaovn1210alias@gmail.com', // generated ethereal user
+                                pass: 'Bao12345' // generated ethereal password
+                            }
+                        });
+                        let mailOptions = {
+                            from: '"Sportshop - Mật khẩu của bạn"',
+                            to: data[0].email,
+                            subject: 'Sportshop - Mật khẩu đã được thay đổi',
+                            text: '',
+                            html: `<div>Email: ${data[0].email}</div><b>Your password: ${data[0].password}</b>`
+                        };
+                        transporter.sendMail(mailOptions);
+                    });
+                    res.send({"success": "Thành công!"});
+                }
+            });
+        }
+        else {
+            res.send({"error": "Email không tồn tại!"});
+        }
     });
 }
